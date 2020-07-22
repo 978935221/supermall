@@ -1,0 +1,134 @@
+git仓库与远程GitHub仓库联系起来
+方法一：
+git status
+git add .
+git commit -m '初始化项目'
+git push
+		978935221
+		luokai0708
+
+需要导入时再进行这项操作
+git add .
+git commit -m '初始化项目'
+git push
+
+
+方法二：
+git remote add origin https://github.com/978935221/testmall.git
+git push -u origin master
+
+<!---   用default导出的文件可以直接import 文件  from
+          没用则import {文件} from--->
+
+
+一般都需要创建：
+npm install
+
+
+创建新项目后：步骤：
+1.划分目录结构：
+		src：assets资源  img（文件夹）
+										 css（文件夹）
+				components组件——公共组件   common（文件夹）——这个项目可以使用，下个项目也可以使用的
+																	content（文件夹）——当前业务相关的组件
+				views视图——对应视图以及部分私有组件(当前页面需要的组件)
+				router路由
+				store vuex
+				network网络相关的
+				common公共的js文件
+
+2.引用两个css文件
+	创建normalize.css让网页都一样
+	base.css
+
+3.配置路径别名
+	创建vue.config.js文件
+
+4.创建.editorconfig文件   该文件用于将不同的风格代码统一，避免不同开发者形成不同的代码
+		可直接复制
+
+5.创建路由 npm install vue-router --save
+  创建router/index.js文件
+   在main.js中挂载
+
+6.项目的模块划分： tabbar->路由映射关系
+
+7.创建网络连接  network-> request.js
+  npm install axios --save
+
+8.安装BetterScroll插件
+  npm install @better-scroll/core@next --save
+  BetterScroll插件，旨在解决移动端的滚动情况（已支持PC）
+
+
+
+
+
+解决首页中Better-Scroll可滚动区域的问题
+  Better-Scroll在决定有多少区域可以滚动时，是根据scrollerHeight属性决定
+  解决：监听每一张图片是否加载完成，只要有一张图片加载完成了，执行一次refresh
+    监听：原生js监听图片：img.onload = function（）
+          Vue监听：@load='方法'
+            调用scroll的refresh
+          将GoodsLisitem中的事件传入Home中，我们选择事件总线
+            bus -> 总线
+            Vue.prototype.$bus = new Vue()
+            this.bus.emit('事件名称',参数)
+            this.bus.on('事件名称',回调函数(参数))
+  对于refresh非常频繁的问题，进行防抖操作(就如在百度搜索hello 你输入完了才自动刷新，避免输入一个刷新一次)
+    防抖debounce/节流throttle
+    防抖函数起作用的过程：
+      如果我们直接执行refresh,那么refresh函数会被执行30次
+      可以将refresh函数传入到debounce函数中，生成一个新函数
+      之后在调用非常频繁的时候，就使用新生成的函数
+      而新生成的函数并不会非常频繁的调用，如果下一次执行的非常快，那么会将上一次取消掉
+     // 防抖动函数
+     debounce(func,delay){
+       let timer = null
+       return function(...args){
+         if(timer) clearTimeout(timer)
+         timer = setTimeout(() => {
+           func.apply(this,args)
+         },delay)
+       }
+     },
+
+
+/*@load  该属性及在图片加载完后触发*/
+9.tabControl的吸顶效果
+  获取到tabControl的offsetTop
+    必须只掉滚动到多少时，开始有吸顶的效果，这时候获取tabControl的offsetTop
+    但是，如果直接在mounted中获取tabControl的offsetTop，那么值是不正确的
+    如何获取正确的值
+      监听HomeSwiper中img的加载完成
+      加载完成后，发出事件，在Home.vue中，获取正确的值
+        为了不让HomeSweiper多次发出事件
+        可以使用isLoad的变量进行状态的记录
+      注意：这里不进行多次调用和debounce的区别：
+  监听滚动，动态的改变tabControl的样式
+
+
+
+10.让Home保持原理的样子
+  让Home不要随意销毁掉
+    keep-alive标签包裹住
+  让Home中的内容保持原来的位置
+    离开时，保持一个位置信息
+    进来时，将位置读取
+
+
+
+修饰符.native在什么时候使用
+  在我们需要监听一个组件的原生事件时，必须给对应的事件加上.native修饰符才能进行监听
+
+
+
+vh 视高
+
+
+style后面加个scoped表示这个style的作用域只在这个文件中
+
+
+
+ref如果是绑定在组件中的，那么通过this.$refs.refname获取到的是一个组件对象
+ref如果是绑定在普通的元素中，那么通过this.$refs.refname获取到的是一个元素对象
